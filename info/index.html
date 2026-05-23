@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover"
+  />
+  <title>Nova IA | Pesquisa</title>
+  
+  <!-- Font Awesome para ícones modernos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #000000;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 0;
+      position: relative;
+      overflow-x: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Efeito Liquid Glass */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+      animation: liquidMove 20s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes liquidMove {
+      0% { transform: rotate(0deg) scale(1); }
+      100% { transform: rotate(5deg) scale(1.1); }
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 560px;
+      min-height: 100vh;
+      padding: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 28px;
+      padding: 20px 18px 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+      min-height: auto;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+      animation: shine 8s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      20% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    /* Animações modernas */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeScaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeSlideUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+    }
+
+    .hero-card,
+    .result-wrap,
+    .quiz-container {
+      animation: fadeScaleIn 0.5s ease-out forwards;
+    }
+
+    .option {
+      animation: slideInRight 0.3s ease-out forwards;
+      animation-fill-mode: both;
+    }
+
+    .option:nth-child(1) { animation-delay: 0.05s; }
+    .option:nth-child(2) { animation-delay: 0.1s; }
+    .option:nth-child(3) { animation-delay: 0.15s; }
+    .option:nth-child(4) { animation-delay: 0.2s; }
+
+    .center {
+      text-align: center;
+    }
+
+    /* Logo estilizado */
+    .logo-wrapper {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .hero-icon,
+    .result-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 24px rgba(251, 191, 36, 0.25);
+      animation: pulseGlow 2s infinite;
+    }
+
+    .hero-icon i,
+    .result-icon i {
+      font-size: 38px;
+      color: #000;
+    }
+
+    .hero-title {
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .hero-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 340px;
+      margin: 0 auto 24px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 14px 8px 12px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-icon {
+      color: #fbbf24;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .stat-icon i {
+      font-size: 22px;
+    }
+
+    .stat-number {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      width: 100%;
+      min-height: 56px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-primary:active::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .hero-footnote {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 24px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .separator {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 8px 0 20px;
+    }
+
+    .progress-line-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .progress-status {
+      color: #fbbf24;
+      font-weight: 800;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .question-title {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-align: center;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .question-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 24px 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .question-text {
+      font-size: 18px;
+      line-height: 1.4;
+      font-weight: 700;
+      color: white;
+      text-align: center;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .option {
+      width: 100%;
+      min-height: 64px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      text-align: left;
+    }
+
+    .option:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(4px);
+    }
+
+    .option:active {
+      transform: scale(0.99);
+    }
+
+    .option.selected {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+    }
+
+    .option-letter {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .option.selected .option-letter {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    .option-text {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .bottom-actions {
+      margin-top: 24px;
+    }
+
+    .btn-next {
+      width: 100%;
+      min-height: 56px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 8px 20px rgba(251, 191, 36, 0.25);
+    }
+
+    .btn-next:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.3);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .btn-next:not(:disabled):active {
+      transform: scale(0.98);
+    }
+
+    .result-wrap {
+      text-align: center;
+      padding-top: 8px;
+    }
+
+    .result-title {
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .result-sub {
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0 auto 24px;
+      max-width: 330px;
+    }
+
+    .info-box {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 24px;
+      padding: 20px 16px;
+      margin: 0 0 24px;
+      transition: all 0.3s ease;
+    }
+
+    .info-title {
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .info-text {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .info-text strong {
+      color: #fbbf24;
+    }
+
+    .thanks-text {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 auto 28px;
+      max-width: 350px;
+      font-weight: 500;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn-primary-link {
+      width: 100%;
+      min-height: 54px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(251, 191, 36, 0.25);
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary-link:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fbbf24;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-note {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+      line-height: 1.5;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 480px) {
+      .phone {
+        padding: 8px;
+      }
+      
+      .screen {
+        padding: 16px 16px 24px;
+        border-radius: 24px;
+      }
+
+      .hero-title,
+      .result-title {
+        font-size: 24px;
+      }
+
+      .hero-text,
+      .result-sub,
+      .info-text,
+      .thanks-text {
+        font-size: 13px;
+      }
+
+      .question-text {
+        font-size: 16px;
+      }
+
+      .option {
+        min-height: 58px;
+        font-size: 13px;
+        padding: 10px 14px;
+      }
+
+      .btn-next,
+      .btn-primary-link,
+      .btn-secondary,
+      .btn-primary {
+        font-size: 15px;
+        min-height: 52px;
+      }
+
+      .stats-grid {
+        gap: 8px;
+      }
+
+      .hero-icon,
+      .result-icon {
+        width: 70px;
+        height: 70px;
+      }
+
+      .hero-icon i,
+      .result-icon i {
+        font-size: 32px;
+      }
+      
+      .option-letter {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .hero-title {
+        font-size: 22px;
+      }
+      
+      .question-text {
+        font-size: 15px;
+      }
+      
+      .option {
+        font-size: 12px;
+        min-height: 54px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen" id="app"></div>
+  </div>
+
+  <script>
+    const perguntas = [
+      { pergunta: "Qual é a capital de Moçambique?", opcoes: ["Beira", "Nampula", "Maputo", "Quelimane"] },
+      { pergunta: "Qual destas cidades é conhecida como a segunda maior de Moçambique?", opcoes: ["Tete", "Beira", "Xai-Xai", "Pemba"] },
+      { pergunta: "Qual é a moeda oficial de Moçambique?", opcoes: ["Rand", "Metical", "Kwacha", "Escudo"] },
+      { pergunta: "Qual é a língua oficial de Moçambique?", opcoes: ["Inglês", "Francês", "Português", "Suaíli"] },
+      { pergunta: "Qual oceano banha a costa de Moçambique?", opcoes: ["Oceano Atlântico", "Oceano Índico", "Oceano Pacífico", "Mar Mediterrâneo"] },
+      { pergunta: "Qual destes países faz fronteira com Moçambique?", opcoes: ["Nigéria", "Botswana", "Malawi", "Gana"] },
+      { pergunta: "Qual é a data da independência de Moçambique?", opcoes: ["25 de Junho", "7 de Setembro", "1 de Maio", "10 de Novembro"] },
+      { pergunta: "Qual destas províncias pertence ao norte de Moçambique?", opcoes: ["Gaza", "Cabo Delgado", "Maputo", "Inhambane"] },
+      { pergunta: "Qual destes pratos é muito conhecido em Moçambique?", opcoes: ["Matapa", "Sushi", "Taco", "Pizza"] },
+      { pergunta: "Qual destes ingredientes é comum na matapa?", opcoes: ["Folhas de mandioca", "Batata", "Trigo", "Maçã"] },
+      { pergunta: "Qual destes meios de pagamento móvel é muito usado em Moçambique?", opcoes: ["M-Pesa", "Pix", "Venmo", "Zelle"] },
+      { pergunta: "Qual destas operadoras atua em Moçambique?", opcoes: ["Vodacom", "TIM", "Claro", "Orange Espanha"] },
+      { pergunta: "Qual destes rios é importante em Moçambique?", opcoes: ["Zambeze", "Tâmisa", "Danúbio", "Mississípi"] },
+      { pergunta: "Quelimane pertence a que província?", opcoes: ["Sofala", "Zambézia", "Nampula", "Gaza"] },
+      { pergunta: "Qual destes setores é importante para a economia de Moçambique?", opcoes: ["Agricultura", "Esqui", "Caça à neve", "Cinema 3D"] },
+      { pergunta: "Qual destes feriados é nacional em Moçambique?", opcoes: ["Dia da Independência", "Halloween", "Black Friday", "Thanksgiving"] },
+      { pergunta: "Qual destas cidades fica mais ao sul de Moçambique?", opcoes: ["Maputo", "Pemba", "Nampula", "Lichinga"] },
+      { pergunta: "Qual destes transportes é muito comum nas cidades moçambicanas?", opcoes: ["Chapa", "Trem-bala", "Metrô elevado", "Teleférico"] },
+      { pergunta: "Qual destas atividades está ligada à costa moçambicana?", opcoes: ["Pesca", "Esqui na neve", "Patinagem no gelo", "Escalada alpina"] },
+      { pergunta: "Qual destas cidades pertence à província de Sofala?", opcoes: ["Beira", "Bilene", "Boane", "Marracuene"] },
+      { pergunta: "Qual destes animais marinhos pode ser encontrado na costa de Moçambique?", opcoes: ["Golfinho", "Morsa", "Urso polar", "Rena"] },
+      { pergunta: "Qual destas é uma característica do clima de muitas zonas de Moçambique?", opcoes: ["Tropical", "Polar", "Ártico", "Glacial"] },
+      { pergunta: "Qual destas atividades é comum em mercados moçambicanos?", opcoes: ["Venda de produtos frescos", "Venda de neve", "Corrida de trenós", "Leilão de gelo"] },
+      { pergunta: "Qual destas cidades é capital da província de Nampula?", opcoes: ["Nampula", "Chókwè", "Massinga", "Boane"] },
+      { pergunta: "Qual destas qualidades é importante num serviço de transporte?", opcoes: ["Segurança", "Atraso constante", "Falta de respeito", "Desorganização"] },
+      { pergunta: "Qual destas opções é importante ao avaliar internet móvel?", opcoes: ["Velocidade", "Cor do chip", "Peso do telemóvel", "Tamanho da caixa"] },
+      { pergunta: "Qual destas qualidades é mais valorizada no atendimento ao cliente?", opcoes: ["Respeito", "Ignorar o cliente", "Demorar sem explicar", "Responder mal"] },
+      { pergunta: "Qual destas cidades é conhecida pelo turismo no norte do país?", opcoes: ["Pemba", "Tete", "Chimoio", "Cuamba"] },
+      { pergunta: "Qual documento é usado como identificação em Moçambique?", opcoes: ["BI", "Cartão metro", "Passe escolar europeu", "Carta consular francesa"] },
+      { pergunta: "Qual destas línguas locais é falada em Moçambique?", opcoes: ["Changana", "Coreano", "Italiano", "Holandês"] }
+    ];
+
+    let etapa = "inicio";
+    let indiceAtual = 0;
+    let respostas = new Array(perguntas.length).fill(null);
+
+    function progressPercent() {
+      return ((indiceAtual + 1) / perguntas.length) * 100;
+    }
+
+    function renderInicio() {
+      return `
+        <div class="hero-card center animate-in">
+          <div class="hero-icon">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <div class="hero-title">Pesquisa de Parceiros</div>
+          <div class="hero-subtitle">Moçambique</div>
+          <div class="hero-text">Participe nesta pesquisa sobre a sua experiência e avaliação de empresas moçambicanas. A sua opinião é muito importante!</div>
+          <div class="stats-grid">
+            <div class="stat-box"><div class="stat-icon"><i class="fas fa-question-circle"></i></div><div class="stat-number">30</div><div class="stat-label">Perguntas</div></div>
+            <div class="stat-box"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-number">~8</div><div class="stat-label">Minutos</div></div>
+            <div class="stat-box"><div class="stat-icon"><i class="fas fa-tag"></i></div><div class="stat-number">10+</div><div class="stat-label">Categorias</div></div>
+          </div>
+          <button class="btn-primary" id="startBtn"><i class="fas fa-arrow-right"></i><span>Começar Questionário</span></button>
+          <div class="hero-footnote"><i class="fas fa-check-circle"></i> Todas as respostas são válidas. Responda com sinceridade!</div>
+        </div>
+      `;
+    }
+
+    function renderQuiz() {
+      const perguntaAtual = perguntas[indiceAtual];
+      const letras = ["A", "B", "C", "D"];
+      const opcoesHTML = perguntaAtual.opcoes.map((opcao, i) => {
+        const selected = respostas[indiceAtual] === i ? "selected" : "";
+        return `<button class="option ${selected}" data-index="${i}"><span class="option-letter">${letras[i]}</span><span class="option-text">${opcao}</span></button>`;
+      }).join("");
+
+      return `
+        <div class="quiz-container animate-in">
+          <div class="progress-line-wrap"><span class="progress-label"></i> Pergunta ${indiceAtual + 1} de ${perguntas.length}</span><span class="progress-status">${Math.round(progressPercent())}%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${progressPercent()}%"></div></div>
+          <div class="question-title"><i class="fas fa-tag"></i> Selecione a opção que melhor representa a sua resposta</div>
+          <div class="question-card"><div class="question-text">${perguntaAtual.pergunta}</div></div>
+          <div class="options">${opcoesHTML}</div>
+          <div class="bottom-actions"><button class="btn-next" id="nextBtn" ${respostas[indiceAtual] === null ? "disabled" : ""}>${indiceAtual === perguntas.length - 1 ? "Finalizar Questionário" : "Próxima Pergunta"} <i class="fas fa-arrow-right"></i></button></div>
+        </div>
+      `;
+    }
+
+    function renderFinal() {
+      return `
+        <div class="result-wrap animate-in">
+          <div class="result-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="result-title">PARABÉNS!</div>
+          <div class="result-sub">Por responder todas às ${perguntas.length} perguntas do questionário da forma certa.</div>
+          <div class="info-box"><div class="info-title"><i class="fas fa-clock"></i><span>Informação Importante</span></div><div class="info-text">As suas respostas foram recebidas com sucesso.<br />Deve esperar <strong>7 dias úteis</strong> para ter uma assistência completa.<br /><br />Enquanto aguarda, assista às aulas abaixo e pode apresentar qualquer dúvida.</div></div>
+          <div class="thanks-text"><i class="fas fa-heart" style="color: #fbbf24;"></i> Obrigado pela sua participação e contribuição para o treinamento da NOVA IA moçambicana.</div>
+          <div class="result-buttons"><a href="https://drive.google.com/drive/folders/1fKKW4LZC9rCovOhjF8bicv8ZZ0oCZJTs?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-primary-link"><i class="fas fa-download"></i><span>Baixar Aulas</span></a><a href="https://saddlebrown-alligator-900729.hostingersite.com/novai/297/" target="_blank" rel="noopener noreferrer" class="btn-secondary"><i class="fas fa-money-bill-wave"></i><span>Levantar o Valor</span></a></div>
+          <div class="footer-note"><i class="fas fa-comment-dots"></i> A sua opinião é muito importante para melhorar os serviços em Moçambique.</div>
+        </div>
+      `;
+    }
+
+    function render() {
+      const app = document.getElementById("app");
+      if (etapa === "inicio") {
+        app.innerHTML = renderInicio();
+        document.getElementById("startBtn").addEventListener("click", () => { etapa = "quiz"; render(); });
+        return;
+      }
+      if (etapa === "quiz") {
+        app.innerHTML = renderQuiz();
+        document.querySelectorAll(".option").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const indexSelecionado = Number(btn.dataset.index);
+            respostas[indiceAtual] = indexSelecionado;
+            document.querySelectorAll(".option").forEach((b) => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            document.getElementById("nextBtn").disabled = false;
+          });
+        });
+        document.getElementById("nextBtn").addEventListener("click", () => {
+          if (respostas[indiceAtual] === null) return;
+          if (indiceAtual < perguntas.length - 1) { indiceAtual++; render(); } 
+          else { etapa = "final"; render(); }
+        });
+        return;
+      }
+      if (etapa === "final") { app.innerHTML = renderFinal(); }
+    }
+    render();
+  </script>
+</body>
+</html>

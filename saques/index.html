@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+  <title>NOVA IA | Saques</title>
+  
+  <!-- Font Awesome para ícones modernos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    :root {
+      --bg: #000000;
+      --glass: rgba(255, 255, 255, 0.03);
+      --line: rgba(255, 255, 255, 0.10);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.62);
+      --soft: rgba(255, 255, 255, 0.08);
+      --green: #22c55e;
+      --green-2: #16a34a;
+      --yellow: #f59e0b;
+      --yellow-2: #fbbf24;
+      --red: #ef4444;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      --radius: 32px;
+    }
+
+    body {
+      background: #000000;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      color: white;
+      padding: 18px;
+    }
+
+    /* Efeito Liquid Glass */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+      animation: liquidMove 20s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes liquidMove {
+      0% { transform: rotate(0deg) scale(1); }
+      100% { transform: rotate(5deg) scale(1.1); }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 34px 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn .4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+      animation: shine 8s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      20% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .demo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.28);
+      color: #ffd68a;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: white;
+      text-transform: uppercase;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo i {
+      font-size: 28px;
+      color: #fbbf24;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 30px;
+      height: 2px;
+      background: #fbbf24;
+      animation: logoLine 2s infinite;
+    }
+
+    @keyframes logoLine {
+      0% { width: 30px; opacity: 1; }
+      50% { width: 60px; opacity: 0.5; }
+      100% { width: 30px; opacity: 1; }
+    }
+
+    .back-button {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-3px);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 15px;
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+
+    h2 {
+      color: rgba(255, 255, 255, 0.92);
+      margin-bottom: 24px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    h3 {
+      color: rgba(255, 255, 255, 0.74);
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      line-height: 1.4;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      background: white;
+      color: black;
+      border: none;
+      padding: 16px 20px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.4px;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.1);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px -10px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn:disabled::before { display: none; }
+
+    .btn-success {
+      background: linear-gradient(180deg, var(--green) 0%, var(--green-2) 100%);
+      color: white;
+      box-shadow: 0 20px 40px -10px rgba(34, 197, 94, 0.35);
+    }
+
+    .btn-success::before {
+      background: rgba(255, 255, 255, 0.10);
+    }
+
+    .btn-secondary {
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.5);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .btn-secondary::before {
+      display: none;
+    }
+
+    .btn-secondary:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .success-actions {
+      margin-top: 26px;
+    }
+
+    .payment-methods {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .payment-method {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 22px 14px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .payment-method:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 40px -15px rgba(255, 255, 255, 0.2);
+    }
+
+    .payment-method.selected {
+      background: white;
+      border-color: white;
+      transform: scale(1.04);
+      box-shadow: 0 30px 50px -20px white;
+    }
+
+    .payment-method.selected span {
+      color: black;
+    }
+
+    .payment-method i {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: block;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .payment-method.selected i {
+      color: black;
+    }
+
+    .payment-method span {
+      display: block;
+      font-weight: 700;
+      color: white;
+      transition: color 0.3s;
+      letter-spacing: 0.5px;
+    }
+
+    .form-container {
+      margin-top: 18px;
+      animation: slideIn .3s ease;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.4px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      font-size: 16px;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #fbbf24;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .saldo {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 24px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      animation: pulse 3s infinite;
+    }
+
+    @keyframes pulse {
+      0% { border-color: rgba(255, 255, 255, 0.1); }
+      50% { border-color: rgba(251, 191, 36, 0.5); }
+      100% { border-color: rgba(255, 255, 255, 0.1); }
+    }
+
+    .saldo h3 {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .saldo .valor {
+      font-size: 48px;
+      font-weight: 800;
+      color: #fbbf24;
+      letter-spacing: -1px;
+    }
+
+    .processing {
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .liquid-loader {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 24px auto;
+    }
+
+    .liquid-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+      animation: liquidBlob 6s ease-in-out infinite alternate;
+      opacity: 0.9;
+      box-shadow: 0 0 50px rgba(251, 191, 36, 0.5);
+    }
+
+    .liquid-circle:nth-child(2) {
+      width: 130px;
+      height: 130px;
+      background: rgba(251, 191, 36, 0.8);
+      animation: liquidBlob 8s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes liquidBlob {
+      0% {
+        border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      100% {
+        border-radius: 58% 42% 30% 70% / 55% 55% 45% 45%;
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .processing-text {
+      color: #fbbf24;
+      font-size: 18px;
+      margin: 20px 0;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      font-weight: 700;
+    }
+
+    .processing-text::after {
+      content: '...';
+      position: absolute;
+      animation: dots 1.5s steps(4, end) infinite;
+      width: 20px;
+      margin-left: 5px;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    .lock-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 12px auto 26px;
+    }
+
+    .lock-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.5));
+      animation: lockFloat 3s ease-in-out infinite;
+    }
+
+    .lock-icon i {
+      font-size: 80px;
+      color: #fbbf24;
+    }
+
+    .lock-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(251, 191, 36, 0.3) 0%, transparent 70%);
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes lockFloat {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -60%) scale(1.1); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    .waiting-message {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 16px;
+      margin: 18px 0;
+      color: white;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .waiting-message-strong {
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.18), rgba(245, 158, 11, 0.09));
+      border: 1px solid rgba(245, 158, 11, 0.34);
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.10), 0 18px 40px -18px rgba(245, 158, 11, 0.32);
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff1cf;
+      animation: noticePulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes noticePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.015); }
+    }
+
+    .saque-detalhes {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 22px;
+      margin: 18px 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .detalhe-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .detalhe-item:last-child {
+      border-bottom: none;
+    }
+
+    .detalhe-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .detalhe-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .detalhe-label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .detalhe-value {
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .detalhe-value.highlight {
+      font-size: 28px;
+      letter-spacing: -0.5px;
+      color: #fbbf24;
+    }
+
+    .tiny-link-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0 14px;
+    }
+
+    .tiny-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.86);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s ease;
+      text-decoration: none;
+    }
+
+    .tiny-link:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.24);
+      transform: translateY(-1px);
+    }
+
+    .timer-box {
+      margin-top: 16px;
+      padding: 18px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      text-align: center;
+    }
+
+    .timer-title {
+      color: rgba(255,255,255,0.68);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 12px;
+    }
+
+    .timer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .timer-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 8px;
+    }
+
+    .timer-number {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fbbf24;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .timer-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.56);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      font-weight: 700;
+    }
+
+    .blocked {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(239, 68, 68, 0.10);
+      border: 1px solid rgba(239, 68, 68, 0.26);
+      color: #ffb4b4;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: 0 18px 40px -20px rgba(239, 68, 68, 0.40);
+    }
+
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+
+    .popup-overlay.show {
+      display: flex;
+    }
+
+    .popup-card {
+      width: min(100%, 560px);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      box-shadow: 0 40px 90px rgba(0,0,0,.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 24px 18px 18px;
+      position: relative;
+      animation: slideIn .28s ease;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.04);
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      transition: all .25s ease;
+    }
+
+    .popup-close:hover {
+      background: rgba(255,255,255,0.10);
+      transform: scale(1.05);
+    }
+
+    .popup-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #fbbf24;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+
+    .popup-note {
+      text-align: center;
+      color: rgba(255,255,255,0.56);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 540px) {
+      .card {
+        padding: 26px 18px;
+        border-radius: 24px;
+      }
+
+      h1 { font-size: 34px; }
+      h2 { font-size: 24px; }
+
+      .saldo .valor { font-size: 38px; }
+
+      .payment-methods {
+        gap: 12px;
+      }
+
+      .payment-method {
+        padding: 18px 10px;
+      }
+
+      .payment-method i {
+        font-size: 40px;
+      }
+
+      .timer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .detalhe-value.highlight {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .card {
+        padding: 22px 16px;
+      }
+      
+      h1 { font-size: 28px; }
+      h2 { font-size: 22px; }
+      
+      .saldo .valor { font-size: 32px; }
+      
+      .lock-icon i {
+        font-size: 60px;
+      }
+      
+      .lock-container {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="app"></div>
+
+  <div class="popup-overlay" id="detailsPopup">
+    <div class="popup-card">
+      <button class="popup-close" onclick="closePopup()"><i class="fas fa-times"></i></button>
+      <div class="popup-title"><i class="fas fa-receipt"></i> DETALHES DO SAQUE</div>
+
+      <div class="saque-detalhes" id="popupDetails"></div>
+
+      <div class="timer-box">
+        <div class="timer-title"><i class="fas fa-clock"></i> Receberá o Valor na sua conta em:</div>
+        <div class="timer-grid">
+          <div class="timer-item">
+            <div class="timer-number" id="popupDays">00</div>
+            <div class="timer-label">Dias</div>
+          </div>
+          <div class="timer-item">
+            <div class="timer-number" id="popupHours">00</div>
+            <div class="timer-label">Horas</div>
+          </div>
+          <div class="timer-item">
+            <div class="timer-number" id="popupMinutes">00</div>
+            <div class="timer-label">Min</div>
+          </div>
+          <div class="timer-item">
+            <div class="timer-number" id="popupSeconds">00</div>
+            <div class="timer-label">Seg</div>
+          </div>
+        </div>
+        <div id="popupBlockedBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentScreen = 'welcome';
+    let selectedMethod = null;
+
+    let formData = {
+      numero: '',
+      nome: '',
+      valorSaque: null
+    };
+
+    const SALDO_DISPONIVEL = 12473;
+    const APP_KEY = 'demo_saque_estado_v1';
+    const TIMER_DURATION_MS = 14 * 24 * 60 * 60 * 1000;
+
+    const app = document.getElementById('app');
+
+    let state = loadState();
+
+    function getInitialState() {
+      return {
+        saqueRealizado: false,
+        selectedMethod: null,
+        formData: {
+          numero: '',
+          nome: '',
+          valorSaque: null
+        },
+        timerStartedAt: null,
+        timerEndsAt: null,
+        saqueBloqueado: false
+      };
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(APP_KEY);
+      if (!saved) return getInitialState();
+
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          ...getInitialState(),
+          ...parsed,
+          formData: {
+            ...getInitialState().formData,
+            ...(parsed.formData || {})
+          }
+        };
+      } catch {
+        return getInitialState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(APP_KEY, JSON.stringify(state));
+    }
+
+    function formatCurrency(value) {
+      const num = Number(value || 0);
+      return num.toLocaleString('pt-PT') + ' MT';
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function methodLabel(method) {
+      if (method === 'mpesa') return 'M-PESA';
+      if (method === 'emola') return 'E-MOLA';
+      return '---';
+    }
+
+    function getRemainingMs() {
+      if (!state.timerEndsAt) return 0;
+      return Math.max(0, state.timerEndsAt - Date.now());
+    }
+
+    function getTimerParts() {
+      const remaining = getRemainingMs();
+
+      const totalSeconds = Math.floor(remaining / 1000);
+      const days = Math.floor(totalSeconds / (24 * 60 * 60));
+      const hours = Math.floor((totalSeconds % (24 * 60 * 60)) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      return {
+        remaining,
+        days,
+        hours,
+        minutes,
+        seconds
+      };
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function checkBlockedStatus() {
+      if (state.timerEndsAt && Date.now() >= state.timerEndsAt) {
+        if (!state.saqueBloqueado) {
+          state.saqueBloqueado = true;
+          saveState();
+        }
+      }
+    }
+
+    function renderScreen() {
+      checkBlockedStatus();
+
+      selectedMethod = state.selectedMethod;
+      formData = { ...state.formData };
+
+      if (state.saqueRealizado) {
+        renderSaqueRealizado();
+        startTimerLoop();
+        return;
+      }
+
+      switch (currentScreen) {
+        case 'welcome':
+          renderWelcome();
+          break;
+        case 'payment':
+          renderPayment();
+          break;
+        case 'amount':
+          renderAmount();
+          break;
+        case 'processing':
+          renderProcessing();
+          break;
+        case 'success':
+          renderSuccess();
+          startTimerLoop();
+          break;
+      }
+    }
+
+    function renderWelcome() {
+      app.innerHTML = `
+        <div class="card">
+
+          <div class="nav-header">
+            <div class="logo"></i> NOVA IA</div>
+          </div>
+
+          <h3><i class="fas fa-wallet"></i> Saldo disponível:</h3>
+          <h1>${formatCurrency(SALDO_DISPONIVEL)}</h1>
+
+          <p class="description">
+         Realize o saque de todos seus ganhos obtidos treinando a nova inteligência artificial Moçambicana!
+          </p>
+
+          <button class="btn" onclick="nextScreen('payment')"><i class="fas fa-money-bill-wave"></i> Levantar meu Saldo</button>
+        </div>
+      `;
+    }
+
+    function renderPayment() {
+      app.innerHTML = `
+        <div class="card">
+
+          <div class="back-button" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
+
+          <h2><i class="fas fa-credit-card"></i> Escolha o método</h2>
+
+          <div class="payment-methods">
+            <div class="payment-method ${selectedMethod === 'mpesa' ? 'selected' : ''}" onclick="selectMethod('mpesa', event)">
+              <i class="fas fa-mobile-alt"></i>
+              <span>M-PESA</span>
+            </div>
+
+            <div class="payment-method ${selectedMethod === 'emola' ? 'selected' : ''}" onclick="selectMethod('emola', event)">
+              <i class="fas fa-university"></i>
+              <span>E-MOLA</span>
+            </div>
+          </div>
+
+          <div id="formContainer" class="form-container">
+            ${selectedMethod ? `
+              <div class="form-group">
+                <label><i class="fas fa-phone"></i> Número de telefone</label>
+                <input type="tel" id="numero" placeholder="Digite o número" value="${escapeHtml(formData.numero)}" oninput="updateForm('numero', this.value)">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-user"></i> Nome do titular</label>
+                <input type="text" id="nome" placeholder="Digite o nome completo" value="${escapeHtml(formData.nome)}" oninput="updateForm('nome', this.value)">
+              </div>
+            ` : ''}
+          </div>
+
+          <button class="btn" onclick="nextScreen('amount')" ${!selectedMethod || !formData.numero || !formData.nome ? 'disabled' : ''}>
+            <i class="fas fa-arrow-right"></i> Continuar
+          </button>
+        </div>
+      `;
+    }
+
+    function renderAmount() {
+      app.innerHTML = `
+        <div class="card">
+
+          <div class="back-button" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
+
+          <h2><i class="fas fa-coins"></i> Quanto deseja retirar?</h2>
+
+          <div class="saldo">
+            <h3><i class="fas fa-chart-line"></i> Saldo disponível</h3>
+            <div class="valor">${SALDO_DISPONIVEL.toLocaleString('pt-PT')} MT</div>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fas fa-dollar-sign"></i> Valor do saque</label>
+            <input
+              type="number"
+              id="valorSaque"
+              placeholder="Digite o valor"
+              min="1"
+              max="${SALDO_DISPONIVEL}"
+              value="${formData.valorSaque ?? ''}"
+              oninput="validateAmount(this.value)"
+            >
+          </div>
+
+          <button class="btn" id="saqueBtn" onclick="startProcessing()" ${!(formData.valorSaque > 0 && formData.valorSaque <= SALDO_DISPONIVEL) ? 'disabled' : ''}>
+            <i class="fas fa-check-circle"></i> Fazer Saque
+          </button>
+        </div>
+      `;
+    }
+
+    function renderProcessing() {
+      app.innerHTML = `
+        <div class="card">
+
+          <div class="processing">
+            <div class="liquid-loader">
+              <div class="liquid-circle"></div>
+              <div class="liquid-circle"></div>
+            </div>
+            <div class="processing-text"><i class="fas fa-spinner fa-pulse"></i> Processando</div>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 20px;"><i class="fas fa-hourglass-half"></i> Aguarde um momento</p>
+          </div>
+        </div>
+      `;
+
+      setTimeout(() => {
+        state.saqueRealizado = true;
+        if (!state.timerStartedAt) {
+          state.timerStartedAt = Date.now();
+          state.timerEndsAt = Date.now() + TIMER_DURATION_MS;
+        }
+        saveState();
+        currentScreen = 'success';
+        renderScreen();
+      }, 12000);
+    }
+
+    function getDetailsHtml() {
+      return `
+        <div class="detalhe-item">
+          <div class="detalhe-icon"><i class="fas fa-coins"></i></div>
+          <div class="detalhe-content">
+            <div class="detalhe-label">Valor retirado</div>
+            <div class="detalhe-value highlight">${formatCurrency(state.formData.valorSaque)}</div>
+          </div>
+        </div>
+
+        <div class="detalhe-item">
+          <div class="detalhe-icon"><i class="fas fa-credit-card"></i></div>
+          <div class="detalhe-content">
+            <div class="detalhe-label">Carteira</div>
+            <div class="detalhe-value">${methodLabel(state.selectedMethod)}</div>
+          </div>
+        </div>
+
+        <div class="detalhe-item">
+          <div class="detalhe-icon"><i class="fas fa-phone"></i></div>
+          <div class="detalhe-content">
+            <div class="detalhe-label">Número</div>
+            <div class="detalhe-value">${escapeHtml(state.formData.numero || '---')}</div>
+          </div>
+        </div>
+
+        <div class="detalhe-item">
+          <div class="detalhe-icon"><i class="fas fa-user"></i></div>
+          <div class="detalhe-content">
+            <div class="detalhe-label">Titular</div>
+            <div class="detalhe-value">${escapeHtml(state.formData.nome || '---')}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSuccessCard(titleText, showTopLogo = false) {
+      const blockedBox = state.saqueBloqueado
+        ? `<div class="blocked"><i class="fas fa-exclamation-triangle"></i> Detectamos atividade suspeita: seu saque foi bloqueado e sua conta desativada.</div>`
+        : '';
+
+      const topLogo = showTopLogo ? `
+        <div class="nav-header">
+          <div class="logo"> NOVA IA</div>
+        </div>
+      ` : '';
+
+      return `
+        <div class="card">
+
+          ${topLogo}
+
+          <div class="lock-container" ${showTopLogo ? 'style="width: 100px; height: 100px; margin: 8px auto 20px;"' : ''}>
+            <div class="lock-glow"></div>
+            <div class="lock-icon"><i class="fas fa-lock"></i></div>
+          </div>
+
+          <h2 style="text-align:center;">${titleText}</h2>
+
+          <h3 style="text-align:center; margin-top:-8px;">
+            Valor retirado: <strong style="color: #fbbf24;">${formatCurrency(state.formData.valorSaque)}</strong>
+          </h3>
+
+          <div class="tiny-link-wrap">
+            <span class="tiny-link" onclick="openPopup()"><i class="fas fa-info-circle"></i> Ver detalhes do saque</span>
+          </div>
+
+          <div class="waiting-message waiting-message-strong">
+            <i class="fas fa-hourglass"></i> Irá receber o valor em 7 a 14 dias úteis
+          </div>
+
+          <div class="success-actions">
+            <button class="btn btn-success" onclick="window.location.href='https://wa.me/258855387827'">
+              <i class="fab fa-whatsapp"></i> FALAR COM O SUPORTE
+            </button>
+
+            <button class="btn btn-secondary" style="cursor: not-allowed; opacity: 0.5;">
+              <i class="fas fa-lock"></i> ACESSAR PLATAFORMA (Indisponível)
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSuccess() {
+      app.innerHTML = renderSuccessCard('Saque Concluído!');
+      updateAllTimers();
+    }
+
+    function renderSaqueRealizado() {
+      app.innerHTML = renderSuccessCard('SAQUE FEITO COM SUCESSO', true);
+      updateAllTimers();
+    }
+
+    let timerInterval = null;
+
+    function startTimerLoop() {
+      if (timerInterval) clearInterval(timerInterval);
+      updateAllTimers();
+
+      timerInterval = setInterval(() => {
+        checkBlockedStatus();
+        updateAllTimers();
+      }, 1000);
+    }
+
+    function updateAllTimers() {
+      const parts = getTimerParts();
+
+      const map = [
+        ['days', parts.days],
+        ['hours', parts.hours],
+        ['minutes', parts.minutes],
+        ['seconds', parts.seconds],
+        ['popupDays', parts.days],
+        ['popupHours', parts.hours],
+        ['popupMinutes', parts.minutes],
+        ['popupSeconds', parts.seconds]
+      ];
+
+      map.forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = pad(value);
+      });
+
+      const popupBlockedBox = document.getElementById('popupBlockedBox');
+      if (popupBlockedBox) {
+        popupBlockedBox.innerHTML = state.saqueBloqueado
+          ? `<div class="blocked"><i class="fas fa-exclamation-triangle"></i> Detectamos atividade suspeita: seu saque foi bloqueado e sua conta desativada.</div>`
+          : '';
+      }
+
+      if (parts.remaining <= 0) {
+        state.saqueBloqueado = true;
+        saveState();
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+      }
+    }
+
+    window.nextScreen = (screen) => {
+      currentScreen = screen;
+      renderScreen();
+    };
+
+    window.goBack = () => {
+      if (currentScreen === 'payment') currentScreen = 'welcome';
+      else if (currentScreen === 'amount') currentScreen = 'payment';
+      renderScreen();
+    };
+
+    window.selectMethod = (method, event) => {
+      selectedMethod = method;
+      state.selectedMethod = method;
+      saveState();
+
+      document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
+      });
+
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('selected');
+      }
+
+      const formContainer = document.getElementById('formContainer');
+      if (formContainer) {
+        formContainer.innerHTML = `
+          <div class="form-group">
+            <label><i class="fas fa-phone"></i> Número de telefone</label>
+            <input type="tel" id="numero" placeholder="Digite o número" value="${escapeHtml(state.formData.numero)}" oninput="updateForm('numero', this.value)">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-user"></i> Nome do titular</label>
+            <input type="text" id="nome" placeholder="Digite o nome completo" value="${escapeHtml(state.formData.nome)}" oninput="updateForm('nome', this.value)">
+          </div>
+        `;
+      }
+
+      const btn = document.querySelector('.btn');
+      if (btn) {
+        btn.disabled = !(state.selectedMethod && state.formData.numero && state.formData.nome);
+      }
+    };
+
+    window.updateForm = (field, value) => {
+      state.formData[field] = value;
+      saveState();
+
+      const btn = document.querySelector('.btn');
+      if (btn) {
+        btn.disabled = !(state.selectedMethod && state.formData.numero && state.formData.nome);
+      }
+    };
+
+    window.validateAmount = (value) => {
+      const btn = document.getElementById('saqueBtn');
+      const valor = parseFloat(value);
+
+      if (valor && valor > 0 && valor <= SALDO_DISPONIVEL) {
+        state.formData.valorSaque = valor;
+        saveState();
+        btn.disabled = false;
+      } else {
+        state.formData.valorSaque = null;
+        saveState();
+        btn.disabled = true;
+      }
+    };
+
+    window.startProcessing = () => {
+      currentScreen = 'processing';
+      renderScreen();
+    };
+
+    window.openPopup = () => {
+      const popup = document.getElementById('detailsPopup');
+      const details = document.getElementById('popupDetails');
+      details.innerHTML = getDetailsHtml();
+      popup.classList.add('show');
+      updateAllTimers();
+    };
+
+    window.closePopup = () => {
+      document.getElementById('detailsPopup').classList.remove('show');
+    };
+
+    document.getElementById('detailsPopup').addEventListener('click', (e) => {
+      if (e.target.id === 'detailsPopup') closePopup();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePopup();
+    });
+
+    renderScreen();
+  </script>
+</body>
+</html>
